@@ -10,11 +10,15 @@ jobs:
   run-fetcher:
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright/python:v1.48.0-jammy # Pre-baked dependencies
+      image: mcr.microsoft.com/playwright/python:v1.48.0-jammy # Pre-baked browsers & OS libs
 
     steps:
       - name: Check out repo
         uses: actions/checkout@v4
+
+      # Installs only the python binding (~2 seconds)
+      - name: Install Python Playwright Package
+        run: pip install playwright
 
       - name: Run Scraper
         run: python get_jute_price.py
