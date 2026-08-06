@@ -10,18 +10,21 @@ jobs:
   run-fetcher:
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright/python:v1.48.0-jammy # Pre-baked browsers & OS libs
+      image: mcr.microsoft.com/playwright/python:v1.48.0-jammy
 
     steps:
       - name: Check out repo
         uses: actions/checkout@v4
 
-      # Pin version to match container browser binaries exactly
       - name: Install Python Playwright Package
         run: pip install playwright==1.48.0
 
       - name: Run Scraper
         run: python get_jute_price.py
+
+      # Fixes the 'dubious ownership' error inside Docker containers
+      - name: Mark Safe Directory for Git
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
       - name: Commit Latest JSON Output
         uses: stefanzweifel/git-auto-commit-action@v5
