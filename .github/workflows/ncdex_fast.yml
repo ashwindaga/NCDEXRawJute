@@ -1,0 +1,26 @@
+name: Fast NCDEX Fetcher
+
+on:
+  workflow_dispatch:      # Triggered instantly via iOS Shortcut API call
+
+permissions:
+  contents: write
+
+jobs:
+  run-fetcher:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright/python:v1.48.0-jammy # Pre-baked dependencies
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Run Scraper
+        run: python get_jute_price.py
+
+      - name: Commit Latest JSON Output
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "auto: update latest.json [skip ci]"
+          file_pattern: "data/latest.json"
