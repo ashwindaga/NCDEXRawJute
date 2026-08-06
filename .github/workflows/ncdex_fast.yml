@@ -16,9 +16,9 @@ jobs:
       - name: Check out repo
         uses: actions/checkout@v4
 
-      # Installs only the python binding (~2 seconds)
+      # Pin version to match container browser binaries exactly
       - name: Install Python Playwright Package
-        run: pip install playwright
+        run: pip install playwright==1.48.0
 
       - name: Run Scraper
         run: python get_jute_price.py
