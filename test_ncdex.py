@@ -4,12 +4,12 @@ from playwright.sync_api import sync_playwright
 
 
 def test_ncdex_fetch():
-  # 1. Format date as YYYY-MM-DD
+  # Target Date in YYYY-MM-DD format
   yesterday = datetime.date.today() - datetime.timedelta(days=1)
   date_str = yesterday.strftime("%Y-%m-%d")
 
   print("=" * 60)
-  print(f"[INFO] Starting CSRF-Authenticated NCDEX API Test")
+  print(f"[INFO] Starting DataTables-Compliant NCDEX Scraper")
   print(f"[INFO] Target Date: {date_str}")
   print("=" * 60)
 
@@ -23,70 +23,67 @@ def test_ncdex_fetch():
     )
     page = context.new_page()
 
-    # Step 1: Load page to establish session & pass JS challenge
-    print("\n[STEP 1] Navigating to NCDEX Spot Prices page...")
+    # Step 1: Initialize Session
+    print("\n[STEP 1] Initializing page session...")
     page.goto("https://www.ncdex.com/markets/spotprices", wait_until="networkidle")
     page.wait_for_timeout(3000)
 
-    # Step 2: Extract CSRF Token from DOM
-    print("\n[STEP 2] Extracting CSRF Token from DOM...")
-    csrf_token = page.evaluate("""() => {
-            const meta = document.querySelector('meta[name="csrf-token"]');
-            if (meta) return meta.getAttribute('content');
-            const input = document.querySelector('input[name="_token"]');
-            if (input) return input.value;
-            return window.Laravel ? window.Laravel.csrfToken : '';
-        }""")
-
+    # Step 2: Execute Native jQuery DataTables AJAX Call
     print(
-        f"  Extracted CSRF Token:"
-        f" {csrf_token[:10]}...{csrf_token[-10:] if csrf_token else 'NONE'}"
+        f"\n[STEP 2] Executing jQuery DataTables request for 'JUTRAWKOL' on"
+        f" {date_str}..."
     )
 
-    # Step 3: Execute fetch INSIDE the browser page context
-    print(
-        f"\n[STEP 3] Executing in-page AJAX fetch for date {date_str} with CSRF"
-        " token..."
-    )
-
-    fetch_js = f"""
+    script = f"""
         async () => {{
-            const token = '{csrf_token}';
-            const params = new URLSearchParams();
-            params.append('product', 'JUTRAWKOL');
-            params.append('df', '{date_str}');
-            params.append('dt', '{date_str}');
-            if (token) params.append('_token', token);
-
-            const headers = {{
-                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-                'X-Requested-With': 'XMLHttpRequest',
-                'Accept': 'application/json, text/javascript, */*; q=0.01'
-            }};
-            if (token) headers['X-CSRF-TOKEN'] = token;
-
-            const response = await fetch('/spotprices/get_data', {{
-                method: 'POST',
-                headers: headers,
-                body: params.toString()
+            return new Promise((resolve) => {{
+                if (window.jQuery) {{
+                    window.jQuery.ajax({{
+                        url: '/spotprices/get_data',
+                        type: 'POST',
+                        data: {{
+                            draw: 1,
+                            start: 0,
+                            length: 50,
+                            product: 'JUTRAWKOL',
+                            df: '{date_str}',
+                            dt: '{date_str}',
+                            'search[value]': '',
+                            'search[regex]': 'false'
+                        }},
+                        headers: {{
+                            'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                        }},
+                        success: function(data) {{
+                            resolve(JSON.stringify(data));
+                        }},
+                        error: function(xhr, status, error) {{
+                            resolve(JSON.stringify({{
+                                error: true,
+                                status: xhr.status,
+                                statusText: status,
+                                responseText: xhr.responseText ? xhr.responseText.substring(0, 500) : ''
+                            }}));
+                        }}
+                    }});
+                }} else {{
+                    resolve(JSON.stringify({{ error: true, message: 'jQuery not found on page' }}));
+                }}
             }});
-
-            return await response.text();
         }}
         """
 
-    raw_response = page.evaluate(fetch_js)
+    result_text = page.evaluate(script)
 
     print("\n" + "=" * 60)
-    print("[RESULTS] API Response:")
+    print("[RESULTS] API Payload Response:")
     print("=" * 60)
 
     try:
-      data = json.loads(raw_response)
-      print(json.dumps(data, indent=2))
+      parsed = json.loads(result_text)
+      print(json.dumps(parsed, indent=2))
     except Exception as e:
-      print(f"Failed to parse JSON ({e}). Raw response:")
-      print(raw_response[:1000])
+      print(f"Failed to parse output ({e}):\n{result_text[:1000]}")
 
     browser.close()
 
