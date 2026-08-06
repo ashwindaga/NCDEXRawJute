@@ -14,89 +14,107 @@ def test_ncdex_fetch():
   print("=" * 60)
 
   with sync_playwright() as p:
-    # 2. Launch Chromium Browser
     browser = p.chromium.launch(headless=True)
     context = browser.new_context(
         user_agent=(
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
             " (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         ),
-        viewport={"width": 1280, "height": 800},
+        viewport={"width": 1400, "height": 900},
     )
     page = context.new_page()
 
-    # Navigate to establish session & acquire security cookies
     print("\n[STEP 1] Navigating to NCDEX Spot Prices page...")
     page.goto("https://www.ncdex.com/markets/spotprices", wait_until="networkidle")
     page.wait_for_timeout(3000)
-    print("[STEP 1] Session initialized.")
 
     # -------------------------------------------------------------
-    # STRATEGY 1: Corrected POST Request with URLSearchParams & Headers
+    # STEP 2: Fill UI Form Controls
     # -------------------------------------------------------------
-    print(f"\n[STEP 2 - API] Dispatching POST request with URLSearchParams...")
+    print("[STEP 2] Filling form controls...")
 
-    api_script = f"""
-        async () => {{
-            const params = new URLSearchParams();
-            params.append('product_id', 'JUTRAWKOL');
-            params.append('from_date', '{date_str}');
-            params.append('to_date', '{date_str}');
+    # Select Product (JUTRAWKOL)
+    product_input = page.locator(
+        "input[placeholder*='Choose product'], input[aria-label*='Choose"
+        " product'], .select2-search__field, #select2-product-container,"
+        " input.select2-input"
+    )
 
-            const response = await fetch('https://www.ncdex.com/Market/HistoricalData/GetHistoricalSpotPrices', {{
-                method: 'POST',
-                headers: {{
-                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'Accept': 'application/json, text/javascript, */*; q=0.01'
-                }},
-                body: params.toString()
-            }});
-            return await response.text();
-        }}
-        """
+    # Click product dropdown area
+    page.locator(".select2-selection, .select-product, #product_id").first.click(
+        timeout=5000
+    )
+    page.wait_for_timeout(500)
 
-    raw_response = page.evaluate(api_script)
+    # Type 'JUTRAWKOL' and select from suggestions
+    page.keyboard.type("JUTRAWKOL", delay=100)
+    page.wait_for_timeout(1000)
+    page.keyboard.press("Enter")
 
-    is_json = False
+    # Set Date Inputs
+    date_inputs = page.locator(
+        "input[type='text'][placeholder*='Select date'], input.datepicker,"
+        " #from_date, #to_date"
+    )
+    if date_inputs.count() >= 2:
+      # Fill 'From Date'
+      date_inputs.nth(0).click()
+      date_inputs.nth(0).fill(date_str)
+      # Fill 'To Date'
+      date_inputs.nth(1).click()
+      date_inputs.nth(1).fill(date_str)
+      page.keyboard.press("Escape")  # Close calendar popup if open
+
+    print("[STEP 2] Form inputs filled successfully.")
+
+    # -------------------------------------------------------------
+    # STEP 3: Click 'Show' & Intercept API Response
+    # -------------------------------------------------------------
+    print(
+        "\n[STEP 3] Clicking 'Show' and listening for API response payload..."
+    )
+
+    captured_json = None
+
     try:
-      parsed_data = json.loads(raw_response)
-      is_json = True
-      print("\n" + "=" * 60)
-      print("[SUCCESS] API returned valid JSON response:")
-      print("=" * 60)
-      print(json.dumps(parsed_data, indent=2))
-    except Exception:
-      print("[WARN] Direct API call returned non-JSON. Falling back to UI automation...")
+      # Expect the backend API call triggered by clicking 'Show'
+      with page.expect_response(
+          lambda res: "GetHistoricalSpotPrices" in res.url
+          and res.status == 200,
+          timeout=10000,
+      ) as response_info:
+        page.locator(
+            "button:has-text('Show'), input[value='Show'], .btn-show"
+        ).first.click()
 
-    # -------------------------------------------------------------
-    # STRATEGY 2: UI Automation Fallback (DOM Extraction)
-    # -------------------------------------------------------------
-    if not is_json:
-      print("\n[STEP 2 - UI] Interacting with page form directly...")
+      response = response_info.value
+      captured_json = response.json()
 
-      # Click 'Show' button to populate grid
-      show_btn = page.locator("button:has-text('Show'), #btnShow, .btn-primary")
-      if show_btn.count() > 0:
-        show_btn.first.click()
-        page.wait_for_timeout(4000)
-
-      # Extract table rows directly from page DOM
-      table_rows = page.locator("table tr").all()
-      extracted_data = []
-
-      for row in table_rows:
-        text = row.inner_text().strip()
-        if text:
-          cols = [c.strip() for c in text.split("\t") if c.strip()]
-          extracted_data.append(cols)
-
-      print("\n" + "=" * 60)
+    except Exception as e:
       print(
-          f"[SUCCESS] Scraped {len(extracted_data)} row(s) directly from UI Table DOM:"
+          f"[WARN] Network listener timed out or missed response ({e})."
+          " Fallback to scraping table DOM directly..."
       )
+
+    # -------------------------------------------------------------
+    # STEP 4: Output Captured Results
+    # -------------------------------------------------------------
+    print("\n" + "=" * 60)
+    if captured_json:
+      print("[SUCCESS] Intercepted Clean JSON API Data:")
       print("=" * 60)
-      print(json.dumps(extracted_data, indent=2))
+      print(json.dumps(captured_json, indent=2))
+    else:
+      # Fallback: Extract rendered DOM table rows
+      page.wait_for_timeout(3000)
+      rows = page.locator("table tr").all()
+      table_data = [
+          [c.strip() for c in r.inner_text().split("\t") if c.strip()]
+          for r in rows
+      ]
+      print("[SUCCESS] Extracted Data from Rendered Table DOM:")
+      print("=" * 60)
+      print(json.dumps(table_data, indent=2))
 
     browser.close()
 
