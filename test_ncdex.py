@@ -4,74 +4,99 @@ from playwright.sync_api import sync_playwright
 
 
 def test_ncdex_fetch():
-  # Get yesterday's date in 'DD-MMM-YYYY' format (e.g., 05-Aug-2026)
+  # 1. Target Date (Yesterday in 'DD-MMM-YYYY' format, e.g., 05-Aug-2026)
   yesterday = datetime.date.today() - datetime.timedelta(days=1)
   date_str = yesterday.strftime("%d-%b-%Y")
 
   print("=" * 60)
-  print(f"[INFO] Starting Playwright Test Runner")
+  print(f"[INFO] Starting Playwright Test Scraper")
   print(f"[INFO] Target Date: {date_str}")
   print("=" * 60)
 
   with sync_playwright() as p:
-    # 1. Launch Headless Chromium Browser
+    # 2. Launch Chromium Browser
     browser = p.chromium.launch(headless=True)
     context = browser.new_context(
         user_agent=(
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
             " (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-        )
+        ),
+        viewport={"width": 1280, "height": 800},
     )
     page = context.new_page()
 
-    # 2. Visit NCDEX to execute JS fingerprint challenge
+    # Navigate to establish session & acquire security cookies
     print("\n[STEP 1] Navigating to NCDEX Spot Prices page...")
     page.goto("https://www.ncdex.com/markets/spotprices", wait_until="networkidle")
-
-    # Wait 3 seconds to ensure client-side security scripts execute and cookies are stored
     page.wait_for_timeout(3000)
-    print("[STEP 1] Navigation complete. JS fingerprint cookies acquired.")
+    print("[STEP 1] Session initialized.")
 
-    # 3. Trigger POST Request from within authenticated browser environment
-    print(
-        f"[STEP 2] Dispatching POST request for product JUTRAWKOL on"
-        f" {date_str}..."
-    )
+    # -------------------------------------------------------------
+    # STRATEGY 1: Corrected POST Request with URLSearchParams & Headers
+    # -------------------------------------------------------------
+    print(f"\n[STEP 2 - API] Dispatching POST request with URLSearchParams...")
 
-    fetch_script = f"""
+    api_script = f"""
         async () => {{
-            const formData = new FormData();
-            formData.append('product_id', 'JUTRAWKOL');
-            formData.append('from_date', '{date_str}');
-            formData.append('to_date', '{date_str}');
+            const params = new URLSearchParams();
+            params.append('product_id', 'JUTRAWKOL');
+            params.append('from_date', '{date_str}');
+            params.append('to_date', '{date_str}');
 
             const response = await fetch('https://www.ncdex.com/Market/HistoricalData/GetHistoricalSpotPrices', {{
                 method: 'POST',
-                body: formData
+                headers: {{
+                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json, text/javascript, */*; q=0.01'
+                }},
+                body: params.toString()
             }});
             return await response.text();
         }}
         """
 
-    raw_response = page.evaluate(fetch_script)
+    raw_response = page.evaluate(api_script)
 
-    print("\n" + "=" * 60)
-    print("[CONSOLE LOG - RAW RESPONSE FROM NCDEX]")
-    print("=" * 60)
-
-    # 4. Parse & Verify JSON Output
+    is_json = False
     try:
       parsed_data = json.loads(raw_response)
-      print(f"\n[SUCCESS] Response is valid JSON! Records received:")
+      is_json = True
+      print("\n" + "=" * 60)
+      print("[SUCCESS] API returned valid JSON response:")
+      print("=" * 60)
       print(json.dumps(parsed_data, indent=2))
-    except Exception as e:
+    except Exception:
+      print("[WARN] Direct API call returned non-JSON. Falling back to UI automation...")
+
+    # -------------------------------------------------------------
+    # STRATEGY 2: UI Automation Fallback (DOM Extraction)
+    # -------------------------------------------------------------
+    if not is_json:
+      print("\n[STEP 2 - UI] Interacting with page form directly...")
+
+      # Click 'Show' button to populate grid
+      show_btn = page.locator("button:has-text('Show'), #btnShow, .btn-primary")
+      if show_btn.count() > 0:
+        show_btn.first.click()
+        page.wait_for_timeout(4000)
+
+      # Extract table rows directly from page DOM
+      table_rows = page.locator("table tr").all()
+      extracted_data = []
+
+      for row in table_rows:
+        text = row.inner_text().strip()
+        if text:
+          cols = [c.strip() for c in text.split("\t") if c.strip()]
+          extracted_data.append(cols)
+
+      print("\n" + "=" * 60)
       print(
-          f"\n[FAIL] Could not parse response as JSON. Error: {e}\nRaw"
-          " snippet:"
+          f"[SUCCESS] Scraped {len(extracted_data)} row(s) directly from UI Table DOM:"
       )
-      print(
-          raw_response[:2000]
-      )  # Print first 2000 characters to inspect output
+      print("=" * 60)
+      print(json.dumps(extracted_data, indent=2))
 
     browser.close()
 
