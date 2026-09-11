@@ -1,9 +1,8 @@
 {
-  "status": "error",
-  "message": "Page.goto: Timeout 30000ms exceeded.\nCall log:\nnavigating to \"https://www.ncdex.com/markets/spotprices\", waiting until \"networkidle\"\n",
+  "status": "success",
   "product": "JUTRAWKOL",
   "center": "Kolkatta",
-  "date": "2026-09-09",
-  "time": "N/A",
-  "price": "N/A"
+  "date": "10-Sep-2026",
+  "time": "15:25:00",
+  "price": "13,200.00"
 }
