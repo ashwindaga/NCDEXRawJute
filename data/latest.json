@@ -1,8 +1,9 @@
 {
-  "status": "success",
+  "status": "error",
+  "message": "No price found for 2026-09-14",
   "product": "JUTRAWKOL",
   "center": "Kolkatta",
-  "date": "11-Sep-2026",
-  "time": "15:17:00",
-  "price": "13,000.00"
+  "date": "2026-09-14",
+  "time": "N/A",
+  "price": "N/A"
 }
