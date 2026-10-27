@@ -1,0 +1,24 @@
+name: Test Agmarknet Reachability
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  test-fetch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Run Agmarknet reachability test
+        run: python3 test_agmarknet.py
+
+      - name: Commit result JSON
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "test: agmarknet reachability result [skip ci]"
+          file_pattern: "data/agmarknet_test_result.json"
