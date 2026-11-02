@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-31T05:00:07.437Z",
+  "generated_at": "2026-11-02T05:00:07.262Z",
   "days": {
     "26-10-2026": [
       {
@@ -612,6 +612,58 @@
       },
       {
         "Commodity": "Jute",
+        "Market": "Bethuadahari APMC",
+        "Min_Price": 11200,
+        "State": "West Bengal",
+        "Modal_Price": 11200,
+        "Arrival_Date": "30/10/2026",
+        "District": "Nadia",
+        "Variety": "TD-5",
+        "Commodity_Code": 16,
+        "Grade": "TD 1 (FAQ)",
+        "Max_Price": 12000
+      },
+      {
+        "Commodity": "Jute",
+        "Market": "Beldanga APMC",
+        "Min_Price": 13800,
+        "State": "West Bengal",
+        "Modal_Price": 14000,
+        "Arrival_Date": "30/10/2026",
+        "District": "Murshidabad",
+        "Variety": "Other",
+        "Commodity_Code": 16,
+        "Grade": "TD 3 (FAQ)",
+        "Max_Price": 14300
+      },
+      {
+        "Commodity": "Jute",
+        "Market": "Karimpur APMC",
+        "Min_Price": 11200,
+        "State": "West Bengal",
+        "Modal_Price": 11200,
+        "Arrival_Date": "30/10/2026",
+        "District": "Nadia",
+        "Variety": "TD-5",
+        "Commodity_Code": 16,
+        "Grade": "TD 1 (FAQ)",
+        "Max_Price": 12500
+      },
+      {
+        "Commodity": "Jute",
+        "Market": "Dinhata APMC",
+        "Min_Price": 15700,
+        "State": "West Bengal",
+        "Modal_Price": 15800,
+        "Arrival_Date": "30/10/2026",
+        "District": "Coochbehar",
+        "Variety": "Other",
+        "Commodity_Code": 16,
+        "Grade": "TD 3 (FAQ)",
+        "Max_Price": 15900
+      },
+      {
+        "Commodity": "Jute",
         "Market": "Kasimbazar APMC",
         "Min_Price": 13800,
         "State": "West Bengal",
@@ -626,19 +678,6 @@
       {
         "Commodity": "Jute",
         "Market": "Toofanganj APMC",
-        "Min_Price": 15700,
-        "State": "West Bengal",
-        "Modal_Price": 15800,
-        "Arrival_Date": "30/10/2026",
-        "District": "Coochbehar",
-        "Variety": "Other",
-        "Commodity_Code": 16,
-        "Grade": "TD 3 (FAQ)",
-        "Max_Price": 15900
-      },
-      {
-        "Commodity": "Jute",
-        "Market": "Dinhata APMC",
         "Min_Price": 15700,
         "State": "West Bengal",
         "Modal_Price": 15800,
@@ -853,6 +892,75 @@
         "State": "West Bengal",
         "Modal_Price": 13800,
         "Arrival_Date": "29/10/2026",
+        "District": "Hooghly",
+        "Variety": "TD-5",
+        "Commodity_Code": 16,
+        "Grade": "TD 3 (FAQ)",
+        "Max_Price": 13800
+      }
+    ],
+    "01-11-2026": [
+      {
+        "Commodity": "Jute",
+        "Market": "Bethuadahari APMC",
+        "Min_Price": 11200,
+        "State": "West Bengal",
+        "Modal_Price": 11200,
+        "Arrival_Date": "01/11/2026",
+        "District": "Nadia",
+        "Variety": "TD-5",
+        "Commodity_Code": 16,
+        "Grade": "TD 1 (FAQ)",
+        "Max_Price": 13000
+      },
+      {
+        "Commodity": "Jute",
+        "Market": "Kasimbazar APMC",
+        "Min_Price": 13800,
+        "State": "West Bengal",
+        "Modal_Price": 14000,
+        "Arrival_Date": "01/11/2026",
+        "District": "Murshidabad",
+        "Variety": "Other",
+        "Commodity_Code": 16,
+        "Grade": "TD 3 (FAQ)",
+        "Max_Price": 14200
+      }
+    ],
+    "31-10-2026": [
+      {
+        "Commodity": "Jute",
+        "Market": "Kasimbazar APMC",
+        "Min_Price": 13800,
+        "State": "West Bengal",
+        "Modal_Price": 14000,
+        "Arrival_Date": "31/10/2026",
+        "District": "Murshidabad",
+        "Variety": "Other",
+        "Commodity_Code": 16,
+        "Grade": "TD 3 (FAQ)",
+        "Max_Price": 14200
+      },
+      {
+        "Commodity": "Jute",
+        "Market": "Karimpur APMC",
+        "Min_Price": 11200,
+        "State": "West Bengal",
+        "Modal_Price": 11300,
+        "Arrival_Date": "31/10/2026",
+        "District": "Nadia",
+        "Variety": "TD-5",
+        "Commodity_Code": 16,
+        "Grade": "TD 1 (FAQ)",
+        "Max_Price": 12400
+      },
+      {
+        "Commodity": "Jute",
+        "Market": "Champadanga APMC",
+        "Min_Price": 13600,
+        "State": "West Bengal",
+        "Modal_Price": 13800,
+        "Arrival_Date": "31/10/2026",
         "District": "Hooghly",
         "Variety": "TD-5",
         "Commodity_Code": 16,
