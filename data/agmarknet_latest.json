@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-24T05:00:07.021Z",
+  "generated_at": "2026-11-25T04:00:04.982Z",
   "days": {
     "26-10-2026": [
       {
@@ -1503,6 +1503,19 @@
     "23-11-2026": [
       {
         "Commodity": "Jute",
+        "Market": "Karimpur APMC",
+        "Min_Price": 11200,
+        "State": "West Bengal",
+        "Modal_Price": 11200,
+        "Arrival_Date": "23/11/2026",
+        "District": "Nadia",
+        "Variety": "TD-5",
+        "Commodity_Code": 16,
+        "Grade": "TD 1 (FAQ)",
+        "Max_Price": 13500
+      },
+      {
+        "Commodity": "Jute",
         "Market": "Bethuadahari APMC",
         "Min_Price": 11200,
         "State": "West Bengal",
@@ -1567,6 +1580,21 @@
         "Commodity_Code": 16,
         "Grade": "TD 1 (FAQ)",
         "Max_Price": 13400
+      }
+    ],
+    "24-11-2026": [
+      {
+        "Commodity": "Jute",
+        "Market": "Karimpur APMC",
+        "Min_Price": 11200,
+        "State": "West Bengal",
+        "Modal_Price": 11200,
+        "Arrival_Date": "24/11/2026",
+        "District": "Nadia",
+        "Variety": "TD-5",
+        "Commodity_Code": 16,
+        "Grade": "TD 1 (FAQ)",
+        "Max_Price": 13600
       }
     ]
   }
