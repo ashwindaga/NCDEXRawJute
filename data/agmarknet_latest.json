@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-26T04:00:03.988Z",
+  "generated_at": "2026-11-26T05:00:05.260Z",
   "days": {
     "26-10-2026": [
       {
@@ -1503,6 +1503,19 @@
     "23-11-2026": [
       {
         "Commodity": "Jute",
+        "Market": "Mathabhanga APMC",
+        "Min_Price": 15400,
+        "State": "West Bengal",
+        "Modal_Price": 15500,
+        "Arrival_Date": "23/11/2026",
+        "District": "Coochbehar",
+        "Variety": "Other",
+        "Commodity_Code": 16,
+        "Grade": "TD 3 (FAQ)",
+        "Max_Price": 15600
+      },
+      {
+        "Commodity": "Jute",
         "Market": "Toofanganj APMC",
         "Min_Price": 15400,
         "State": "West Bengal",
@@ -1539,19 +1552,6 @@
         "Commodity_Code": 16,
         "Grade": "TD 1 (FAQ)",
         "Max_Price": 13500
-      },
-      {
-        "Commodity": "Jute",
-        "Market": "Mathabhanga APMC",
-        "Min_Price": 15400,
-        "State": "West Bengal",
-        "Modal_Price": 15500,
-        "Arrival_Date": "23/11/2026",
-        "District": "Coochbehar",
-        "Variety": "Other",
-        "Commodity_Code": 16,
-        "Grade": "TD 3 (FAQ)",
-        "Max_Price": 15600
       },
       {
         "Commodity": "Jute",
@@ -1782,6 +1782,19 @@
     "25-11-2026": [
       {
         "Commodity": "Jute",
+        "Market": "Dinhata APMC",
+        "Min_Price": 15400,
+        "State": "West Bengal",
+        "Modal_Price": 15500,
+        "Arrival_Date": "25/11/2026",
+        "District": "Coochbehar",
+        "Variety": "Other",
+        "Commodity_Code": 16,
+        "Grade": "TD 3 (FAQ)",
+        "Max_Price": 15600
+      },
+      {
+        "Commodity": "Jute",
         "Market": "Haldibari APMC",
         "Min_Price": 15400,
         "State": "West Bengal",
@@ -1809,19 +1822,6 @@
       {
         "Commodity": "Jute",
         "Market": "Baxirhat APMC",
-        "Min_Price": 15400,
-        "State": "West Bengal",
-        "Modal_Price": 15500,
-        "Arrival_Date": "25/11/2026",
-        "District": "Coochbehar",
-        "Variety": "Other",
-        "Commodity_Code": 16,
-        "Grade": "TD 3 (FAQ)",
-        "Max_Price": 15600
-      },
-      {
-        "Commodity": "Jute",
-        "Market": "Dinhata APMC",
         "Min_Price": 15400,
         "State": "West Bengal",
         "Modal_Price": 15500,
